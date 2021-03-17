@@ -26,11 +26,11 @@
         "args": [
           "--force",
           {
-            "value": "--sketch=${workspaceRoot}",
+            "value": "--sketch=${workspaceRoot}\\sketch_Dividing_Aggregating_Walkers",
             "quoting": "strong"
           },
           {
-            "value": "--output=${workspaceRoot}\\out",
+            "value": "--output=${workspaceRoot}\\sketch_Dividing_Aggregating_Walkers\\out",
             "quoting": "strong"
           },
           "--run"
