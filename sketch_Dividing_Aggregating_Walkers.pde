@@ -1,14 +1,15 @@
 // the simulation settings
-int ENV_SIZE = 512;
-int NB_INITIAL_WALKERS = 1;
+int ENV_SIZE = 1024;
+int NB_INITIAL_WALKERS = 10;
 
 float STEP_SIZE = 1.0f;
 float TURN_CHANCES = 0.02;
 float TURN_ANGLE = PI / 4;
+float DEPOSIT_RATE = 1.;
 
 float DIVISION_CHANCES = 0.01;
 float DIVISION_ANGLE = PI / 4;
-boolean DISCRETE_DIV_ANGLE = true;
+boolean DISCRETE_DIV_ANGLE = false;
 
 
 ArrayList<Walker> walkers;
@@ -24,7 +25,7 @@ PVector getTorusPosition (PVector position) {
 }
 
 void setup () {
-  size(512, 512);
+  size(1024, 1024);
   background(0, 0, 0);
   walkers = new ArrayList<Walker>();
 
@@ -32,13 +33,25 @@ void setup () {
   // their position, number, angle has a major impact on the emerging patterns
   for (int i = 0; i < NB_INITIAL_WALKERS; i++) {
     // line distribution
-    float x = float(ENV_SIZE) * .25 + float(ENV_SIZE) * .5 * float(i) / NB_INITIAL_WALKERS;
-    float y = float(ENV_SIZE) * .5;
+    //float x = float(ENV_SIZE) * .25 + float(ENV_SIZE) * .5 * float(i) / NB_INITIAL_WALKERS;
+    //float y = float(ENV_SIZE) * .5;
+
+    // circle distribution
+    float da = float(i) / float(NB_INITIAL_WALKERS) * TWO_PI;
+    float x = cos(da) * float(ENV_SIZE) * .25 + ENV_SIZE*.5;
+    float y = sin(da) * float(ENV_SIZE) * .25 + ENV_SIZE*.5;
+
     float ang = random(0, TWO_PI);
     walkers.add(
-      new Walker(x, y, 0)
+      new Walker(x, y, ang)
     );
   }
+}
+
+void keyPressed() {
+  if (key == ' ') {
+    saveFrame("outputs/output-" + new java.text.SimpleDateFormat("yyyyMMdd-HHmmss").format(new java.util.Date()) + ".png");
+  }  
 }
 
 void draw () {

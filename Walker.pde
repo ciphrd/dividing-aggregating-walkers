@@ -26,8 +26,8 @@ class Walker {
   }
   
   void draw () {
-    stroke(255, 255, 255);
-    strokeWeight(2);
+    stroke(255, int(255. * DEPOSIT_RATE));
+    strokeWeight(1);
     
     // if the line is too long (because of torus world), we shorthen it
     PVector line = lastPos.copy().sub(pos);

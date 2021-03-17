@@ -15,16 +15,17 @@ import java.io.IOException;
 public class sketch_Dividing_Aggregating_Walkers extends PApplet {
 
 // the simulation settings
-int ENV_SIZE = 512;
-int NB_INITIAL_WALKERS = 1;
+int ENV_SIZE = 1024;
+int NB_INITIAL_WALKERS = 20;
 
 float STEP_SIZE = 1.0f;
 float TURN_CHANCES = 0.02f;
 float TURN_ANGLE = PI / 4;
+float DEPOSIT_RATE = 1.f;
 
 float DIVISION_CHANCES = 0.01f;
 float DIVISION_ANGLE = PI / 4;
-boolean DISCRETE_DIV_ANGLE = true;
+boolean DISCRETE_DIV_ANGLE = false;
 
 
 ArrayList<Walker> walkers;
@@ -48,13 +49,25 @@ public void setup () {
   // their position, number, angle has a major impact on the emerging patterns
   for (int i = 0; i < NB_INITIAL_WALKERS; i++) {
     // line distribution
-    float x = PApplet.parseFloat(ENV_SIZE) * .25f + PApplet.parseFloat(ENV_SIZE) * .5f * PApplet.parseFloat(i) / NB_INITIAL_WALKERS;
-    float y = PApplet.parseFloat(ENV_SIZE) * .5f;
+    //float x = float(ENV_SIZE) * .25 + float(ENV_SIZE) * .5 * float(i) / NB_INITIAL_WALKERS;
+    //float y = float(ENV_SIZE) * .5;
+
+    // circle distribution
+    float da = PApplet.parseFloat(i) / PApplet.parseFloat(NB_INITIAL_WALKERS) * TWO_PI;
+    float x = cos(da) * PApplet.parseFloat(ENV_SIZE) * .25f + ENV_SIZE*.5f;
+    float y = sin(da) * PApplet.parseFloat(ENV_SIZE) * .25f + ENV_SIZE*.5f;
+
     float ang = random(0, TWO_PI);
     walkers.add(
-      new Walker(x, y, 0)
+      new Walker(x, y, ang)
     );
   }
+}
+
+public void keyPressed() {
+  if (key == ' ') {
+    saveFrame("outputs/output-" + new java.text.SimpleDateFormat("yyyyMMdd-HHmmss").format(new java.util.Date()) + ".png");
+  }  
 }
 
 public void draw () {
@@ -133,8 +146,8 @@ class Walker {
   }
   
   public void draw () {
-    stroke(255, 255, 255);
-    strokeWeight(2);
+    stroke(255, PApplet.parseInt(255.f * DEPOSIT_RATE));
+    strokeWeight(1);
     
     // if the line is too long (because of torus world), we shorthen it
     PVector line = lastPos.copy().sub(pos);
@@ -144,7 +157,7 @@ class Walker {
     }
   }
 }
-  public void settings() {  size(512, 512); }
+  public void settings() {  size(1024, 1024); }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "sketch_Dividing_Aggregating_Walkers" };
     if (passedArgs != null) {
