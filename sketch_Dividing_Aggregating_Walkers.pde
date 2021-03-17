@@ -2,14 +2,17 @@
 int ENV_SIZE = 1024;
 int NB_INITIAL_WALKERS = 10;
 
-float STEP_SIZE = 1.0f;
-float TURN_CHANCES = 0.02;
-float TURN_ANGLE = PI / 4;
-float DEPOSIT_RATE = 1.;
+float STEP_SIZE = 0.7f;
+float TURN_CHANCES = 0.9;
+float TURN_ANGLE = 0.1;
+float DEPOSIT_RATE = .05;
 
 float DIVISION_CHANCES = 0.01;
 float DIVISION_ANGLE = PI / 4;
 boolean DISCRETE_DIV_ANGLE = false;
+
+float TERMINATION_THRESHOLD = 0.8;
+float TERMINATION_CHANCES = DIVISION_CHANCES * 0.8;
 
 
 ArrayList<Walker> walkers;
@@ -38,10 +41,11 @@ void setup () {
 
     // circle distribution
     float da = float(i) / float(NB_INITIAL_WALKERS) * TWO_PI;
-    float x = cos(da) * float(ENV_SIZE) * .25 + ENV_SIZE*.5;
-    float y = sin(da) * float(ENV_SIZE) * .25 + ENV_SIZE*.5;
+    float distCenter = float(ENV_SIZE) * .25;
+    float x = cos(da) * distCenter + ENV_SIZE*.5;
+    float y = sin(da) * distCenter + ENV_SIZE*.5;
 
-    float ang = random(0, TWO_PI);
+    float ang = random(0, TWO_PI);// da - PI;
     walkers.add(
       new Walker(x, y, ang)
     );
@@ -81,6 +85,13 @@ void draw () {
   loadPixels();
   for (int i = walkers.size()-1; i >= 0; i--) {
     Walker w = walkers.get(i);
+
+    float r = random(0, 1);
+    if (r < TERMINATION_CHANCES) {
+      walkers.remove(i);
+      continue;
+    }
+
     // turn the walker coordinates into an index to sample the environment color
     // to do that we compute the "next" walker position
     PVector dir = new PVector(cos(w.ang), sin(w.ang));
@@ -89,11 +100,12 @@ void draw () {
 
     // sample aggregate color
     int idx = int(npos.x) + int(npos.y) * ENV_SIZE;
+    if (idx > ENV_SIZE*ENV_SIZE) continue;
     int pixel = pixels[idx];
     float red = red(pixel);
     
     // kill the walker if it will run on some aggregate
-    if (red > 200.0) {
+    if (red > TERMINATION_THRESHOLD * 255) {
       walkers.remove(i);
       // draw its last step to fill the gap
       w.lastPos = w.pos;
