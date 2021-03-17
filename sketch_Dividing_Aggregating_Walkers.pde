@@ -2,17 +2,17 @@
 int ENV_SIZE = 1024;
 int NB_INITIAL_WALKERS = 10;
 
-float STEP_SIZE = 0.7f;
-float TURN_CHANCES = 0.9;
-float TURN_ANGLE = 0.1;
-float DEPOSIT_RATE = .05;
+float STEP_SIZE = 1f;
+float TURN_CHANCES = 0.03;
+float TURN_ANGLE = 0.4;
+float DEPOSIT_RATE = 0.1;
 
 float DIVISION_CHANCES = 0.01;
 float DIVISION_ANGLE = PI / 4;
 boolean DISCRETE_DIV_ANGLE = false;
 
-float TERMINATION_THRESHOLD = 0.8;
-float TERMINATION_CHANCES = DIVISION_CHANCES * 0.8;
+float TERMINATION_THRESHOLD = 0.7;
+float TERMINATION_CHANCES = DIVISION_CHANCES * 0.;
 
 
 ArrayList<Walker> walkers;
